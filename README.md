@@ -1,3 +1,3 @@
-# Cipherli.st
+# Cipherlist
 
-See [https://cipherli.st](https://cipherli.st)
+See [https://cipherlist.eu](https://cipherlist.eu), a continuation of cipherli.st, originally written by Raymii and Juerd
