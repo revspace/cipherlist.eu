@@ -116,19 +116,22 @@ add_header X-XSS-Protection "1; mode=block";
             <div class="col-md-4 column">
             <h2>Lighttpd</h2>
                 <pre class="pre-trans" id="lighttpdconfig">
-ssl.honor-cipher-order = "enable"
-ssl.cipher-list = "EECDH+AESGCM:EDH+AESGCM"
-ssl.use-compression = "disable"
-ssl.dh-file = "/etc/lighttpd/dhparam.pem" # openssl dhparam -out /etc/lighttpd/dhparam.pem 4096
-setenv.add-response-header = (
-    "Strict-Transport-Security" =&gt; "max-age=63072000; <i>includeSubDomains</i>; preload",
-    "X-Frame-Options" =&gt; "DENY",
-    "X-Content-Type-Options" =&gt; "nosniff"
+ssl.openssl.ssl-conf-cmd = (
+  "MinProtocol" =&gt; "TLSv1.2",
+  "Options" =&gt; "-ServerPreference",
+  "CipherString" =&gt; "EECDH+AESGCM:EDH+AESGCM:CHACHA20:!SHA1:!SHA256:!SHA384"
 )
-ssl.use-sslv2 = "disable"
-ssl.use-sslv3 = "disable"
-ssl.openssl.ssl-conf-cmd = ("Protocol" => "-TLSv1.1, -TLSv1, -SSLv3") # v1.4.48 or up
-ssl.ec-curve = "secp384r1"
+
+var.response_header_policy = (
+  "strict-transport-security" =&gt; "max-age=63072000; includeSubDomains; preload"
+  "content-security-policy" =&gt; "default-src https:",
+  "x-frame-options" =&gt; "DENY",
+  "x-content-type-options" =&gt; "nosniff",
+  "x-xss-protection" =&gt; "1; mode=block",
+  "permissions-policy" =&gt; "interest-cohort=()"
+)
+
+setenv.set-response-header += var.response_header_policy
             </pre><br />
             </div>
             </div>
@@ -142,7 +145,8 @@ ssl.ec-curve = "secp384r1"
                     <a href="https://raymii.org/s/tutorials/Strong_SSL_Security_On_nginx.html">Rationale and tutorial on Strong SSL Security on nginx</a>
                 </div>
                 <div class="col-md-4 column">
-                    <a href="https://raymii.org/s/tutorials/Strong_SSL_Security_On_lighttpd.html">Rationale and tutorial on Strong SSL Security on Lighttpd</a>
+                    <a href="https://raymii.org/s/tutorials/Strong_SSL_Security_On_lighttpd.html">Rationale and tutorial on Strong SSL Security on Lighttpd</a><br />
+                    <a href="https://wiki.lighttpd.net/Docs_SSL">Lighttpd TLS documentation</a>
                 </div>
             </div>
             <div class="col-md-10 col-md-offset-1" id="oldcrap">
@@ -162,7 +166,7 @@ ssl.ec-curve = "secp384r1"
         </ul>
             <h2>Why?</h2>
         <a href="https://www.ssllabs.com/ssltest/analyze.html?d=cipherlist.eu"><img src="img/a-plus.png" alt="A+ JAAAAAAAAAA" class="pull-right"/></a>
-              The above ciphers are Copy Pastable in your nginx, Lighttpd or Apache config. These provide Strong SSL Security for all modern browsers, plus you get an A+ on the <a href="https://www.ssllabs.com/ssltest/analyze.html?d=cipherlist.eu">SSL Labs Test</a>. In short, they set a strong Forward Secrecy enabled ciphersuite, they disable SSLv2 and SSLv3, add HTTP Strict Transport Security and X-Frame-Deny headers and enable OCSP Stapling (except on Lighttpd, it does not support that yet).
+              The above ciphers are Copy Pastable in your nginx, Lighttpd or Apache config. These provide Strong SSL Security for all modern browsers, plus you get an A+ on the <a href="https://www.ssllabs.com/ssltest/analyze.html?d=cipherlist.eu">SSL Labs Test</a>. In short, they set a strong Forward Secrecy enabled ciphersuite, they disable SSLv2, SSLv3, TLSv1, TLSv1.1, they add HTTP Strict Transport Security and X-Frame-Deny headers and they enable OCSP Stapling.  (Lighttpd 1.4.56 and later supports OCSP Stapling with additional config option <code>ssl.stapling-file</code>).
         <br />Using IIS? Check out <a href="https://www.nartac.com/Products/IISCrypto/Default.aspx">IIS Crypto</a>. Other software like Zeus, Tomcat? Detailed info? Read the <a href="https://wiki.mozilla.org/Security/Server_Side_TLS">Mozilla Page</a>.
               <br />Cipherlist.eu is made by <a href="https://raymii.org">Remy van Elst (Raymii.org)</a> &amp; <a href="http://tnx.nl">Juerd</a> (not the server admin, suggestions to Remy or as pull request) after the idea spawned at a <a href="https://privacycafe.nl/">Privacy Cafe</a> at <a href="https://revspace.nl">Revspace</a>. The image is Public Domain from <a href="https://commons.wikimedia.org/wiki/File:Heart-padlock.svg">here</a>. Feedback <a href="https://raymii.org/s/static/About.html#contact">here please</a>. Source code <a href="https://github.com/sigio/cipherli.st" >here</a>.
             <div class="row" style="clear: both;">
