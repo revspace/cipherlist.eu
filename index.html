@@ -479,7 +479,21 @@ no-tlsv1_1
         </pre>
         <br />
       </div>
+      
+      <div class="col-md-6 column">
+        <h2>Traefik TLSOptions values.yaml</h2>
+        <pre class="pre-trans" id="traefik-tlsoptions-values">
+tlsOptions: 
+	default:
+		preferServerCipherSuites: true
+		cipherSuites:
+			- EECDH+AESGCM:EDH+AESGCM
+		minVersion: VersionTLS13
+		curvePreferences:
+			- secp384r1
 
-
+        </pre>
+        <br>
+      </div>
 </body>
 </html>
