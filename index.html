@@ -98,7 +98,9 @@ SSLSessionTickets Off
 ssl_protocols TLSv1.3;# Requires nginx >= 1.13.0 else use TLSv1.2
 ssl_prefer_server_ciphers on;
 ssl_dhparam /etc/nginx/dhparam.pem; # openssl dhparam -out /etc/nginx/dhparam.pem 4096
-ssl_ciphers EECDH+AESGCM:EDH+AESGCM;
+ssl_ciphers EECDH+CHACHA20:EECDH+AESGCM:EDH+AESGCM;
+ssl_conf_command Ciphersuites TLS_CHACHA20_POLY1305_SHA256:TLS_AES_256_GCM_SHA384:TLS_AES_128_GCM_SHA256;
+ssl_conf_command Options PrioritizeChaCha;
 ssl_ecdh_curve secp384r1; # Requires nginx >= 1.1.0
 ssl_session_timeout  10m;
 ssl_session_cache shared:SSL:10m;
