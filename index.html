@@ -118,12 +118,6 @@ add_header X-XSS-Protection "1; mode=block";
             <div class="col-md-4 column">
             <h2>Lighttpd</h2>
                 <pre class="pre-trans" id="lighttpdconfig">
-ssl.openssl.ssl-conf-cmd = (
-  "MinProtocol" =&gt; "TLSv1.2",
-  "Options" =&gt; "-ServerPreference",
-  "CipherString" =&gt; "EECDH+AESGCM:EDH+AESGCM:CHACHA20:!SHA1:!SHA256:!SHA384"
-)
-
 var.response_header_policy = (
   "strict-transport-security" =&gt; "max-age=63072000; includeSubDomains; preload",
   "content-security-policy" =&gt; "default-src https:",
